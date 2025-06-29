@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Reading Application</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bullet Time Speed Reader</h1>
+            <p>Augment Your Reading Speed With Perfect Comprehention</p>
+        </header>
+
+        <main class="main-grid">
+            <!-- Left Side - Controls and Settings -->
+            <div class="left-panel">
+                <!-- Floating Start Button -->
+                <div class="floating-start-section">
+                    <div class="card start-card">
+                        <h2>Controls</h2>
+                        <button id="startBtn" class="start-button" disabled>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="5,3 19,12 5,21"></polygon>
+                            </svg>
+                            Start Reading
+                        </button>
+                        <div id="statusInfo" class="status-info hidden">
+                            <p id="statusText">Press "Tab" to pause • "Esc" to stop</p>
+                        </div>
+                        <div id="noTextInfo" class="no-text-info">
+                            <p>Add text to begin reading</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Accordion -->
+                <div class="settings-section">
+                    <div class="card">
+                        <div class="accordion">
+                            <button class="accordion-header" id="settingsAccordionBtn">
+                                <div class="accordion-title">
+                                    <span class="settings-icon">⚙️</span>
+                                    <h2>Settings</h2>
+                                </div>
+                                <div class="settings-summary" id="settingsSummary">
+                                    <div class="summary-item">
+                                        <span id="summaryWpm">250 WPM</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span id="summaryFont">Arial</span>
+                                        <div class="color-indicators">
+                                            <div class="color-swatch" id="summaryBgColor"></div>
+                                            <div class="color-swatch" id="summaryTextColor"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6,9 12,15 18,9"></polyline>
+                                </svg>
+                            </button>
+                            <div class="accordion-content" id="settingsAccordionContent">
+                                <div class="settings-controls">
+                                    <!-- Reading Speed Section -->
+                                    <div class="settings-group">
+                                        <h3>Reading Speed</h3>
+                                        <div class="wpm-controls">
+                                            <div class="input-group">
+                                                <label for="wpmInput">Words Per Minute</label>
+                                                <input type="number" id="wpmInput" min="50" max="2000" value="250">
+                                            </div>
+                                            <div class="input-group">
+                                                <label for="wpmSlider">Quick Adjust (50-1000)</label>
+                                                <input type="range" id="wpmSlider" min="50" max="1000" step="50" value="250">
+                                                <div class="slider-labels">
+                                                    <span>50</span>
+                                                    <span>500</span>
+                                                    <span>1000</span>
+                                                </div>
+                                            </div>
+                                            <div class="wpm-display">
+                                                <p>Current: <span id="currentWpm">250 WPM</span></p>
+                                                <p id="wpmLevel">Beginner level</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Customization Section -->
+                                    <div class="settings-group">
+                                        <h3>Customization</h3>
+                                        <div class="customization-controls">
+                                            <div class="input-group">
+                                                <label for="fontFamily">Font Family</label>
+                                                <select id="fontFamily">
+                                                    <option value="Arial, sans-serif">Arial</option>
+                                                    <option value="Times New Roman, serif">Times New Roman</option>
+                                                    <option value="Courier New, monospace">Courier</option>
+                                                    <option value="system-ui, sans-serif">System Sans-serif</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="color-controls">
+                                                <div class="input-group">
+                                                    <label for="backgroundColor">Background</label>
+                                                    <input type="color" id="backgroundColor" value="#000000">
+                                                </div>
+                                                <div class="input-group">
+                                                    <label for="textColor">Text Color</label>
+                                                    <input type="color" id="textColor" value="#ffffff">
+                                                </div>
+                                            </div>
+
+                                            <div class="toggle-controls">
+                                                <label class="toggle-label">
+                                                    <input type="checkbox" id="boldToggle">
+                                                    <span>Bold Text</span>
+                                                </label>
+                                                <label class="toggle-label">
+                                                    <input type="checkbox" id="darkModeToggle">
+                                                    <span>Dark Mode</span>
+                                                </label>
+                                            </div>
+
+                                            <div class="input-group">
+                                                <label for="wordGrouping">Words per Flash: <span id="wordGroupingValue">1</span></label>
+                                                <input type="range" id="wordGrouping" min="1" max="10" value="1">
+                                                <div class="slider-labels">
+                                                    <span>1</span>
+                                                    <span>5</span>
+                                                    <span>10</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-group">
+                                                <label for="fontSize">Font Size: <span id="fontSizeValue">150</span>%</label>
+                                                <input type="range" id="fontSize" min="100" max="500" step="10" value="150">
+                                                <div class="slider-labels">
+                                                    <span>100%</span>
+                                                    <span>300%</span>
+                                                    <span>500%</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="font-preview">
+                                                <p class="preview-label">Preview</p>
+                                                <div id="previewBox" class="preview-box">
+                                                    <span id="previewText">one</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Text Input -->
+            <div class="text-section">
+                <div class="card text-card">
+                    <div class="card-header">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14,2 14,8 20,8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10,9 9,9 8,9"></polyline>
+                        </svg>
+                        <h2>Reading Text</h2>
+                    </div>
+                    <div class="text-input-container">
+                        <textarea id="textInput" placeholder="Paste or type your text here to begin speed reading..."></textarea>
+                        <div class="word-count">
+                            <span id="wordCount">0 words</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Fullscreen Reader -->
+    <div id="fullscreenReader" class="fullscreen-reader hidden">
+        <div class="reader-content">
+            <div id="readerText" class="reader-text"></div>
+            <div id="pausedText" class="paused-text hidden">
+                PAUSED
+                <div class="pause-instructions">Press 'Tab' to resume • 'Esc' to stop</div>
+            </div>
+        </div>
+        <div class="progress-indicator">
+            <span id="progressText">0% • 0 of 0</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
