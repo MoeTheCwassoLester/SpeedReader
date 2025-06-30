@@ -1,0 +1,22 @@
+{
+  "name": "speed-reader-pro",
+  "version": "1.0.0",
+  "description": "A customizable speed reading application with fullscreen word display",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server . -p 3000 -o",
+    "start": "npx http-server . -p 3000 -o",
+    "build": "echo 'Static site - no build required'"
+  },
+  "keywords": [
+    "speed-reading",
+    "reading",
+    "productivity",
+    "static-site"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
