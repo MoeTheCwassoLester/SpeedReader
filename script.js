@@ -8,7 +8,7 @@ class SpeedReader {
             isBold: false,
             wordGrouping: 1,
             fontSize: 150,
-            darkMode: false,
+            darkMode: true,
             settingsAccordionOpen: false
         };
         
