@@ -9,7 +9,7 @@ class SpeedReader {
             wordGrouping: 1,
             fontSize: 150,
             darkMode: false,
-            settingsAccordionOpen: true
+            settingsAccordionOpen: false
         };
         
         this.words = [];
