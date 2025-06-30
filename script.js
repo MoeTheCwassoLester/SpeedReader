@@ -17,12 +17,15 @@ class SpeedReader {
         this.isReading = false;
         this.isPaused = false;
         this.timer = null;
+        this.orientationLocked = false;
+        this.orientationSupported = false;
         
         this.loadSettings();
         this.initializeElements();
         this.bindEvents();
         this.updateUI();
         this.initializeAccordion();
+        this.checkOrientationSupport();
     }
     
     initializeElements() {
@@ -69,6 +72,7 @@ class SpeedReader {
         this.readerText = document.getElementById('readerText');
         this.pausedText = document.getElementById('pausedText');
         this.progressText = document.getElementById('progressText');
+        this.orientationHint = document.getElementById('orientationHint');
     }
     
     bindEvents() {
@@ -100,6 +104,71 @@ class SpeedReader {
         
         // Keyboard events
         document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+        
+        // Fullscreen events
+        document.addEventListener('fullscreenchange', () => this.handleFullscreenChange());
+        document.addEventListener('webkitfullscreenchange', () => this.handleFullscreenChange());
+        document.addEventListener('mozfullscreenchange', () => this.handleFullscreenChange());
+        document.addEventListener('MSFullscreenChange', () => this.handleFullscreenChange());
+    }
+    
+    checkOrientationSupport() {
+        // Check if Screen Orientation API is supported
+        this.orientationSupported = 'orientation' in screen && 'lock' in screen.orientation;
+    }
+    
+    async lockOrientation() {
+        if (!this.orientationSupported) {
+            this.showOrientationHint();
+            return false;
+        }
+        
+        try {
+            await screen.orientation.lock('landscape');
+            this.orientationLocked = true;
+            this.hideOrientationHint();
+            return true;
+        } catch (error) {
+            console.warn('Failed to lock orientation:', error);
+            this.showOrientationHint();
+            return false;
+        }
+    }
+    
+    unlockOrientation() {
+        if (this.orientationSupported && this.orientationLocked) {
+            try {
+                screen.orientation.unlock();
+                this.orientationLocked = false;
+            } catch (error) {
+                console.warn('Failed to unlock orientation:', error);
+            }
+        }
+        this.hideOrientationHint();
+    }
+    
+    showOrientationHint() {
+        if (this.orientationHint) {
+            this.orientationHint.classList.remove('hidden');
+        }
+    }
+    
+    hideOrientationHint() {
+        if (this.orientationHint) {
+            this.orientationHint.classList.add('hidden');
+        }
+    }
+    
+    handleFullscreenChange() {
+        const isFullscreen = !!(document.fullscreenElement || 
+                               document.webkitFullscreenElement || 
+                               document.mozFullScreenElement || 
+                               document.msFullscreenElement);
+        
+        if (!isFullscreen && this.isReading) {
+            // Exited fullscreen while reading - stop reading and unlock orientation
+            this.stopReading();
+        }
     }
     
     initializeAccordion() {
@@ -290,15 +359,53 @@ class SpeedReader {
         }
     }
     
-    startReading() {
+    async startReading() {
         if (this.words.length === 0) return;
         
         this.currentIndex = 0;
         this.isReading = true;
         this.isPaused = false;
         this.updateStartButton();
+        
+        // Show fullscreen reader first
         this.showFullscreenReader();
+        
+        // Try to enter fullscreen mode
+        try {
+            await this.enterFullscreen();
+            // Try to lock orientation after entering fullscreen
+            await this.lockOrientation();
+        } catch (error) {
+            console.warn('Fullscreen or orientation lock failed:', error);
+        }
+        
         this.nextWord();
+    }
+    
+    async enterFullscreen() {
+        const element = this.fullscreenReader;
+        
+        if (element.requestFullscreen) {
+            await element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+            await element.webkitRequestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            await element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+            await element.msRequestFullscreen();
+        }
+    }
+    
+    async exitFullscreen() {
+        if (document.exitFullscreen) {
+            await document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            await document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            await document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            await document.msExitFullscreen();
+        }
     }
     
     stopReading() {
@@ -307,7 +414,16 @@ class SpeedReader {
         this.currentIndex = 0;
         this.clearTimer();
         this.updateStartButton();
+        this.unlockOrientation();
         this.hideFullscreenReader();
+        
+        // Exit fullscreen if we're in it
+        if (document.fullscreenElement || 
+            document.webkitFullscreenElement || 
+            document.mozFullScreenElement || 
+            document.msFullscreenElement) {
+            this.exitFullscreen().catch(console.warn);
+        }
     }
     
     togglePause() {

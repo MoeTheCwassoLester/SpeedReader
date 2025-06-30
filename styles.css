@@ -650,6 +650,34 @@ header p {
     font-size: 0.875rem;
 }
 
+.orientation-hint {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: slideInFromRight 0.3s ease-out;
+    z-index: 1001;
+}
+
+.orientation-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.orientation-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: white;
+    flex-shrink: 0;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -658,6 +686,17 @@ header p {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 
@@ -722,6 +761,13 @@ header p {
         align-items: flex-start;
         gap: 0.25rem;
     }
+    
+    .orientation-hint {
+        top: 1rem;
+        right: 1rem;
+        left: 1rem;
+        text-align: center;
+    }
 }
 
 @media (max-height: 700px) {
@@ -740,6 +786,13 @@ header p {
     
     .card {
         padding: 1rem;
+    }
+}
+
+/* Mobile landscape orientation styles */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .orientation-hint {
+        display: none !important;
     }
 }
 
